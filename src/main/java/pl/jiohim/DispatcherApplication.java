@@ -12,6 +12,8 @@ import pl.jiohim.controller.TelegramBot;
 public class DispatcherApplication {
 
     public static void main(String[] args) throws TelegramApiException {
+        TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
+        botsApi.registerBot(new TelegramBot());
         SpringApplication.run(DispatcherApplication.class);
     }
 }
