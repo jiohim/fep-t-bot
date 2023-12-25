@@ -5,6 +5,7 @@ import lombok.extern.log4j.Log4j;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import pl.jiohim.service.UpdateProducer;
 import pl.jiohim.util.MessageUtil;
 
 @Component
@@ -12,8 +13,13 @@ import pl.jiohim.util.MessageUtil;
 public class UpdateController {
 
     private TelegramBot telegramBot;
+    private final MessageUtil messageUtil;
+    private final UpdateProducer updateProducer;
 
-    private MessageUtil messageUtil;
+    public UpdateController(MessageUtil messageUtil, UpdateProducer updateProducer) {
+        this.messageUtil = messageUtil;
+        this.updateProducer = updateProducer;
+    }
 
     public void registerBot(TelegramBot telegramBot) {
         this.telegramBot = telegramBot;
@@ -27,7 +33,7 @@ public class UpdateController {
         if (update.getMessage() != null) {
             distributeMesageByType(update);
         } else {
-            log.error("Received unspopported type " + update);
+            log.error("Received unsupported type " + update);
         }
     }
 
@@ -55,11 +61,25 @@ public class UpdateController {
     }
 
     private void processTextMessage(Update update) {
+        updateProducer.produce("text",update);
+        setFileIsReceivedView(update);
+
     }
 
     private void processDocMessage(Update update) {
+        updateProducer.produce("doc",update);
+        setFileIsReceivedView(update);
+
     }
 
     private void processPhotoMessage(Update update) {
+        updateProducer.produce("photo",update);
+        setFileIsReceivedView(update);
+
+    }
+
+
+    private void setFileIsReceivedView(Update update) {
+
     }
 }

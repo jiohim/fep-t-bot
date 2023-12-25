@@ -16,40 +16,28 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 
-@PropertySource("application.properties")
-@Data
-@RequiredArgsConstructor
 @Component
 @Log4j
 public class TelegramBot extends TelegramLongPollingBot {
 
 
-    @Value("${bot.name}")
-    private String botName;
 
-    @Value("${bot.token}")
-    private String botToken;
     private UpdateController updateController;
     private static final String BOT_TOKEN = "fep_bot_token";
 
-    public TelegramBot (UpdateController updateController){
-        this.updateController =updateController;
+    public TelegramBot(UpdateController updateController) {
+        this.updateController = updateController;
     }
 
     @PostConstruct
-    public void init(){
+    public void init() {
         updateController.registerBot(this);
     }
 
     @Override
     public void onUpdateReceived(Update update) {
-        var originalMessagge =update.getMessage();
-        log.debug(originalMessagge.getText());
-
-        var response = new SendMessage();
-        response.setChatId(originalMessagge.getChatId().toString());
-        response.setText("Hello from bot");
-        sendAnswerMessage(response);
+        var originalMessagge = update.getMessage();
+        updateController.processUpdate(update);
     }
 
     @Override
